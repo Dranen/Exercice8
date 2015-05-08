@@ -1,4 +1,4 @@
-<pre><div class="text_to_html">#include <iostream> 
+#include <iostream>
 #include <fstream> 
 #include <string> 
 #include <vector> 
@@ -67,47 +67,47 @@ int main(int argc,char **argv)
 
   
   double n=32;
-  cerr << "n " << flush;
+  cerr << "n " << endl;
   cin >> n;
   
   double alpha;
-  cerr << "alpha " << flush;
+  cerr << "alpha " << endl;
   cin >> alpha;
   double zk = 2.0 * M_PI * n/L;
 
   // energy cinetique approximative de l'onde
-  //double E0 = hbar * hbar * zk * zk/(2. * mass);
-  //cerr << "E0 = " << E0 << endl;
+  double E0 = hbar * hbar * zk * zk/(2. * mass);
+  cerr << "E0 = " << E0 << endl;
   
   
   double Rnucleus=50;
-  cerr << "Rnucleus " << flush;
+  cerr << "Rnucleus " << endl;
   cin >> Rnucleus;
   
   double V0=-1;
-  cerr << "V0 " << flush;
+  cerr << "V0 " << endl;
   cin >> V0;
   
   double x0=-128;
-  cerr << "x0 " << flush;
+  cerr << "x0 " << endl;
   cin >> x0;
   
   double sigmanorm = 0.05;
-  cerr << "sigmanorm " << flush;
+  cerr << "sigmanorm " << endl;
   cin >> sigmanorm;  
   double sigma0=sigmanorm*L;
   
   // temps
   double dt = 1.0;
-  cerr << "pas de temps: dt= " << flush;
+  cerr << "pas de temps: dt= " << endl;
   cin >> dt;
 
   double tfinal = 2500.;
-  cerr << "t final " << flush;
+  cerr << "t final " << endl;
   cin >> tfinal;
 
   int ndx = 1024;   // nombre d'intervalles
-  cerr << "nombre d'intervales en x: ndx= " << flush;
+  cerr << "nombre d'intervales en x: ndx= " << endl;
   cin >> ndx;
 
   int nx = ndx + 1;  // nombre de points 
@@ -124,14 +124,27 @@ int main(int argc,char **argv)
   
   // the diagonal and the next-to-diagonal elements of the Hamiltonian matrix:
   // Hamiltonian matrix is needed for energy calculation
-  vector<complex<double> > dH(nx), aH(ndx), cH(ndx);
+  vector<complex<double> > dH(nx), aH(ndx, -(hbar*hbar)/(2*mass*dx*dx)), cH(ndx, -(hbar*hbar)/(2*mass*dx*dx));
   
   // les 3 diagonales des matrices A et B dans l'equation (4.80)
   // d = diagonal
   // a = lower diagonal
   // c = upper diagonal
-  vector<complex<double> > dA(nx), dB(nx), aA(ndx), aB(ndx), cA(ndx), cB(ndx);
-  //TODO: construction des matrices A, B et H.
+  vector<complex<double> > dA(nx), dB(nx), aA(ndx, -(hbar*dt*1i)/(4*mass*dx*dx)), aB(ndx, (hbar*dt*1i)/(4*mass*dx*dx)), cA(ndx, -(hbar*dt*1i)/(4*mass*dx*dx)), cB(ndx, (hbar*dt*1i)/(4*mass*dx*dx));
+
+  for(int i = 0; i < nx; i++)
+  {
+      if(x[i] < -Rnucleus)
+      {
+        dH(i) = (hbar*hbar)/(2*mass*dx*dx)+alpha/x[i];
+      }
+      else
+      {
+        dH(i) = (hbar*hbar)/(2*mass*dx*dx)+V0;
+      }
+      dA(i) = 1+1i*dt*dH(i)/(2*hbar);
+      dB(i) = 1-1i*dt*dH(i)/(2*hbar);
+  }
 
   // prepare la fonction d'onde initiale;
   for(int i = 0; i < nx; ++i) 
@@ -290,5 +303,3 @@ void triangular_solve(const vector<T>& diag,
     }
 }
 
-
-</div></pre>
