@@ -232,8 +232,16 @@ template <class V>
 double probability(const V& psi, int nl, int nr, double dx) 
 {
   double retval = 0;
-  //TODO
-  return retval ;
+  if(nr >= psi.size())
+  {
+      nr = psi.size()-1;
+  }
+  for(int i = nl; i < nr; i++)
+  {
+      retval += norm(psi[i])+norm(psi[i+1]);
+  }
+
+  return retval*dx/2;
 }
 
 double getenergy(const vector<complex<double> >& psi, const vector<complex<double> >& diagH, const vector<complex<double> >& upperH, const vector<complex<double> >& lowerH, const double & dx)
@@ -247,12 +255,12 @@ double getenergy(const vector<complex<double> >& psi, const vector<complex<doubl
   }
   psi_tmp[upperH.size()] = diagH[upperH.size()]*psi[upperH.size()] + lowerH[upperH.size()-1]*psi[upperH.size()-1];
 
-  for(int i = 0; i < diagH.size(); i++)
+  for(int i = 0; i < upperH.size(); i++)
   {
-      energy += conj(psi[i])*psi_tmp[i];
+      energy += conj(psi[i])*psi_tmp[i]+conj(psi[i+1])*psi_tmp[i+1];
   }
 
-  return energy;
+  return energy*dx/2;
 }
 
 double getmeanx(const vector<complex<double> >& psi, const vector<double>& x, const double & dx)
