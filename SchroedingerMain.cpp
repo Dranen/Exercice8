@@ -188,12 +188,16 @@ int main(int argc,char **argv)
     for(int i = 0; i < nx; ++i)
       ofs << 0 << " " << x[i] << " " << abs(psi_now[i]) * abs(psi_now[i]) << endl;
   
-  for(double time = 0; time < tfinal - dt/2.; time += dt) 
+    for(double time = 0; time < tfinal - dt/2.; time += dt)
     {
-      
-      // Crank-Nicolson step Eqn (4.90)
-      //TODO: 1) construire le membre de droite de l'equation (4.90).
-      //      2) Resoudre le systemme d'equations (4.90). Indication: une fonction triangular_solve est fournie (cf plus bas).
+        psi_next[0] = dB[0]*psi_now[0] + cB[0]*psi_now[1];
+        for(int i = 1; i < ndx; i++)
+        {
+            psi_next[i] = dB[i]*psi_now[i] + cB[i]*psi_now[i+1] + aB[i-1]*psi_now[i-1];
+        }
+        psi_next[ndx] = dB[ndx]*psi_now[ndx] + aB[ndx-1]*psi_now[ndx-1];
+
+        triangular_solve(dA, aA, cA, psi_next, psi_next);
       
       // output the probabilities "left" and "right", mean position and mean energy
       cout << time+dt << " "
@@ -236,7 +240,17 @@ double getenergy(const vector<complex<double> >& psi, const vector<complex<doubl
 {
   vector<complex<double> > psi_tmp(psi.size());
   double energy=0.;
-  //TODO
+  psi_tmp[0] = diagH[0]*psi[0] + upperH[0]*psi[1];
+  for(int i = 1; i < upperH.size(); i++)
+  {
+      psi_tmp[i] = diagH[i]*psi[i] + upperH[i]*psi[i+1] + lowerH[i-1]*psi[i-1];
+  }
+  psi_tmp[upperH.size()] = diagH[upperH.size()]*psi[upperH.size()] + lowerH[upperH.size()-1]*psi[upperH.size()-1];
+
+  for(int i = 0; i < diagH.size(); i++)
+  {
+      energy += conj(psi[i])*psi_tmp[i];
+  }
 
   return energy;
 }
