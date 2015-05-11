@@ -206,8 +206,8 @@ int main(int argc,char **argv)
 	   << getmeanx(psi_next,x,dx) << " "            // mean position 
            << getmeanx2(psi_next,x,dx) << " "
 	   << getenergy(psi_next,dH,aH,cH,dx) << " "  // mean energy
-           << getmeanp(psi_next,x,dx) << " "
-           << getmeanp2(psi_next,x,dx)<< endl; // proba "\`a droite"
+           << getmeanp(psi_next,hbar) << " "
+           << getmeanp2(psi_next,x,dx,hbar)<< endl; // proba "\`a droite"
            
       for(int i = 0; i < nx; ++i)
 	 {
@@ -266,28 +266,44 @@ double getenergy(const vector<complex<double> >& psi, const vector<complex<doubl
 double getmeanx(const vector<complex<double> >& psi, const vector<double>& x, const double & dx)
 {
   double meanx=0.;
-  //TODO
-  return meanx;
+  for(int i = 0; i < psi.size()-1; i++)
+  {
+      meanx += conj(psi[i])*x[i]*psi[i]+conj(psi[i+1])*x[i+1]*psi[i+1];
+  }
+  return meanx*dx/2;
 }
 
 double getmeanx2(const vector<complex<double> >& psi, const vector<double>& x, const double & dx)
 {
   double meanx2=0.;
-  //TODO
-  return meanx2;
+  for(int i = 0; i < psi.size()-1; i++)
+  {
+      meanx2 += conj(psi[i])*x[i]*x[i]*psi[i]+conj(psi[i+1])*x[i+1]*x[i+1]*psi[i+1];
+  }
+  return meanx2*dx/2;
 }
 
-double getmeanp(const vector<complex<double> >& psi, const vector<double>& x, const double & dx)
+double getmeanp(const vector<complex<double> >& psi, const double& hbar)
 {
   double meanp= 0;
-  //TODO
-  return meanp;
+  meanp += 2*conj(psi[0])*(psi[1]-psi[0])+conj(psi[1])*(psi[2]-psi[0]);
+  for(int i = 1; i < psi.size()-2; i++)
+  {
+      meanp += conj(psi[i])*(psi[i+1]-psi[i-1])+conj(psi[i+1])*(psi[i+2]-psi[i]);
+  }
+  meanp += conj(psi[psi.size()-2])*(psi[psi.size()-1]-psi[psi.size()-3])+2*conj(psi[psi.size()-1])*(psi[psi.size()-1]-psi[psi.size()-2]);
+  return -1i*hbar*meanp/4;
 }
 
-double getmeanp2(const vector<complex<double> >& psi, const vector<double>& x, const double & dx)
+double getmeanp2(const vector<complex<double> >& psi, const vector<double>& x, const double & dx, const double& hbar)
 {
   double meanp2=0;
-  //TODO
+  meanp2 += conj(psi[0])*(psi[1]-2*psi[0])+conj(psi[1])*(psi[2]-2*psi[1]+psi[0]);
+  for(int i = 1; i < psi.size()-2; i++)
+  {
+      meanp2 += conj(psi[i])*(psi[i+1]-2*psi[i]+psi[i-1])+conj(psi[i+1])*(psi[i+2]-2*psi[i+1]+psi[i]);
+  }
+  meanp2 += conj(psi[psi.size()-2])*(psi[psi.size()-1]-2*psi[psi.size()-2]+psi[psi.size()-3])+conj(psi[psi.size()-1])*(psi[psi.size()-1]-2*psi[psi.size()-2]);
   return meanp2;
 }
 
