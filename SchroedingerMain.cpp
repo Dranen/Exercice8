@@ -187,7 +187,7 @@ int main(int argc,char **argv)
        
   // ecrire la fonction d'onde initiale dans le fichier "psi.dat"
   ostringstream oss;
-  oss << nom + "psi.dat";
+  oss << nom + "_psi.dat";
 
   ofstream ofs(oss.str().c_str()); // asci
     for(int i = 0; i < nx; ++i)

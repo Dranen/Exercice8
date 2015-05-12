@@ -1,6 +1,6 @@
 %  fname='out_Delta100';
 function AnalyseSchroedinger(fname)
-data=load(fname);
+data=load([fname '_out.dat']);
 
 t=data(:,1);
 Pleft=data(:,2);
@@ -44,7 +44,7 @@ ErrorEnergyConserv=max(Emean)-min(Emean)
 %-- 2D plot |psi(x,t)|^2
 nt=length(t);
 clear data
-data=load('psi.dat');
+data=load([fname '_psi.dat']);
 [nn,ii]=size(data);
 nx=nn/nt;
 xgrid=data(1:nx,2);
@@ -54,6 +54,13 @@ psiabs2=reshape(zpsiabs2,nx,nt);
 %  figure
 subplot(m,n,p+3)
 hs=contourf(X',T',psiabs2,20);
+set(gca,'fontsize',fs)
+xlabel('x')
+ylabel('t')
+shading flat
+
+figure
+contourf(X',T',psiabs2,20);
 set(gca,'fontsize',fs)
 xlabel('x')
 ylabel('t')
