@@ -62,10 +62,13 @@ int main(int argc,char **argv)
   double xl=-256;
   double xr=0.0;
   double L= xr-xl;
+  string nom;
 
   // the imaginary i
   complex<double> complex_I = complex<double> (0,1);
 
+  cerr << "nom " << endl;
+  cin >> nom;
   
   double n=32;
   cerr << "n " << endl;
@@ -184,7 +187,7 @@ int main(int argc,char **argv)
        
   // ecrire la fonction d'onde initiale dans le fichier "psi.dat"
   ostringstream oss;
-  oss << "psi.dat";
+  oss << nom + "psi.dat";
 
   ofstream ofs(oss.str().c_str()); // asci
     for(int i = 0; i < nx; ++i)

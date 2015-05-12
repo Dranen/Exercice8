@@ -1,5 +1,5 @@
 %  fname='out_Delta100';
-function aaa(fname)
+function AnalyseSchroedinger(fname)
 data=load(fname);
 
 t=data(:,1);
