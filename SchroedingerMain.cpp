@@ -139,14 +139,8 @@ int main(int argc,char **argv)
 
   for(int i = 0; i < nx; i++)
   {
-      if(x[i] < -Rnucleus)
-      {
-        dH[i] = (hbar*hbar)/(2*mass*dx*dx)+alpha/x[i];
-      }
-      else
-      {
-        dH[i] = (hbar*hbar)/(2*mass*dx*dx)+V0;
-      }
+
+      dH[i] = (hbar*hbar)/(2*mass*dx*dx)+getpotential(alpha,V0,Rnucleus,x[i]);
       dA[i] = 1.0+I*dH[i]*dt/(2*hbar);
       dB[i] = 1.0-I*dH[i]*dt/(2*hbar);
   }
@@ -203,6 +197,8 @@ int main(int argc,char **argv)
         psi_next[ndx] = dB[ndx]*psi_now[ndx] + aB[ndx-1]*psi_now[ndx-1];
 
         triangular_solve(dA, aA, cA, psi_next, psi_next);
+        psi_next[0]=0;
+        psi_next[psi_next.size()-1]=0;
       
       // output the probabilities "left" and "right", mean position and mean energy
       cout << time+dt << " "
