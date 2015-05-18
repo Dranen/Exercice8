@@ -66,4 +66,21 @@ xlabel('x')
 ylabel('t')
 shading flat
 
+figure
+plot(t,xmean,'k-','linewidth',lw);
+set(gca,'fontsize',fs)
+xlabel('x')
+ylabel('<x>')
+
+figure
+plot(t,Pleft,'k-', t,Pright,'r-', 'linewidth',lw);
+set(gca,'fontsize',fs)
+xlabel('t')
+ylabel('P')
+
+for i = 1:max(size(t))
+    plot(X,psiabs2(:,i));
+    pause(0.01);
+end
+
 
