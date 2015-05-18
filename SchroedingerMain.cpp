@@ -62,6 +62,7 @@ int main(int argc,char **argv)
   double xl=-256;
   double xr=0.0;
   double L= xr-xl;
+  int inucleus;
   string nom;
 
   // the imaginary i
@@ -122,6 +123,10 @@ int main(int argc,char **argv)
   for(int i = 0; i < nx; ++i)
     x[i] = xl + i * dx;
 
+  for(int i = 0; i < nx && x[i] < -Rnucleus; i++)
+  {
+      inucleus = Rnucleus;
+  }
 
   // les fonctions d'onde
   vector<complex<double> > psi_next(nx), psi_now(nx);
@@ -171,8 +176,8 @@ int main(int argc,char **argv)
   cerr << "<pp> = "<< getmeanp2(psi_now,dx,hbar) << endl;
   
   cout << 0. << " "
-	   << probability(psi_next,xl,-Rnucleus,dx) << " "  // proba "`a gauche"
-	   << probability(psi_next,-Rnucleus,xr,dx) << " " // proba "\`a droite"
+       << probability(psi_next,0,inucleus,dx) << " "  // proba "`a gauche"
+       << probability(psi_next,inucleus,ndx,dx) << " " // proba "\`a droite"
        << getmeanx(psi_now,x,dx) << " "             // mean position 
        << getenergy(psi_now,dH,aH,cH,dx) << " "   // mean energy
        << getmeanp(psi_now,hbar) << " "
@@ -202,8 +207,8 @@ int main(int argc,char **argv)
       
       // output the probabilities "left" and "right", mean position and mean energy
       cout << time+dt << " "
-	   << probability(psi_next,xl,-Rnucleus,dx) << " "  // proba "`a gauche"
-	   << probability(psi_next,-Rnucleus,xr,dx) << " " // proba "\`a droite"
+       << probability(psi_next,0,inucleus,dx) << " "  // proba "`a gauche"
+       << probability(psi_next,inucleus,ndx,dx) << " " // proba "\`a droite"
 	   << getmeanx(psi_next,x,dx) << " "            // mean position 
            << getmeanx2(psi_next,x,dx) << " "
 	   << getenergy(psi_next,dH,aH,cH,dx) << " "  // mean energy
