@@ -203,8 +203,8 @@ int main(int argc,char **argv)
        << getmeanp(psi_now,hbar) << " "
        << getmeanp2(psi_now,dx,hbar) << " "
        << getenergy(psi_now,dH,aH,cH,dx) << " "
-       << sqrt(xmean2-xmean*xmean)<< " "
-       << sqrt(pmean2-pmean*pmean)<< endl;
+       << sqrt(abs(xmean2-xmean*xmean))<< " "
+       << sqrt(abs(pmean2-pmean*pmean))<< endl;
        
   // ecrire la fonction d'onde initiale dans le fichier "psi.dat"
   ostringstream oss;
@@ -240,8 +240,8 @@ int main(int argc,char **argv)
        << getmeanp(psi_next,hbar) << " "
        << getmeanp2(psi_next,dx,hbar)<< " "
        << getenergy(psi_next,dH,aH,cH,dx) << " "
-       << sqrt(xmean2-xmean*xmean)<< " "
-       << sqrt(pmean2-pmean*pmean)<< endl;
+       << sqrt(abs(xmean2-xmean*xmean))<< " "
+       << sqrt(abs(pmean2-pmean*pmean))<< endl;
            
       for(int i = 0; i < nx; ++i)
 	 {

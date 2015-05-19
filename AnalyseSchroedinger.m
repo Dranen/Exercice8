@@ -10,6 +10,8 @@ xmean2=data(:,5);
 p=data(:,6);
 p2=data(:,7);
 Emean=data(:,8);
+errX=data(:,9);
+errP=data(:,10);
 
 figure
 plot(t,p)
@@ -19,6 +21,26 @@ figure
 plot(t(2:end),p2(2:end))
 xlabel('t')
 ylabel('p^2')
+
+figure
+grid on
+plot(t,errX)
+xlabel('t')
+ylabel('\Delta x')
+figure
+grid
+plot(t,errP)
+xlabel('t')
+ylabel('\Delta p')
+
+figure
+grid on
+plot(t,errX.*errP)
+
+figure
+plot(t,Emean)
+xlabel('t')
+ylabel('E')
 
 figure
 fs=16; lw=1.5;
@@ -62,6 +84,7 @@ shading flat
 figure
 contourf(X',T',psiabs2,20);
 set(gca,'fontsize',fs)
+colorbar
 xlabel('x')
 ylabel('t')
 shading flat
@@ -78,9 +101,10 @@ set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('P')
 
-for i = 1:max(size(t))
-    plot(X,psiabs2(:,i));
-    pause(0.01);
-end
+% figure
+% for i = 1:max(size(t))
+%     plot(X,psiabs2(:,i));
+%     pause(0.01);
+% end
 
 
