@@ -194,7 +194,7 @@ int main(int argc,char **argv)
   xmean = getmeanx(psi_now, x, dx);
   xmean2 = getmeanx2(psi_now,x,dx);
   pmean = getmeanp(psi_now,hbar);
-  pmean2 = getmeanp2(psi_now,hbar);
+  pmean2 = getmeanp2(psi_now,hbar,dx);
   cout << 0. << " "
        << probability(psi_now,0,inucleus,dx) << " "  // proba "`a gauche"
        << probability(psi_now,inucleus,ndx,dx) << " " // proba "\`a droite"
@@ -230,7 +230,7 @@ int main(int argc,char **argv)
         xmean = getmeanx(psi_now, x, dx);
         xmean2 = getmeanx2(psi_now,x,dx);
         pmean = getmeanp(psi_now,hbar);
-        pmean2 = getmeanp2(psi_now,hbar);
+        pmean2 = getmeanp2(psi_now,hbar,dx);
       // output the probabilities "left" and "right", mean position and mean energy
       cout << time+dt << " "
        << probability(psi_next,0,inucleus,dx) << " "  // proba "`a gauche"
@@ -325,12 +325,12 @@ double getmeanp(const vector<complex<double> >& psi, const double& hbar)
 {
   double meanp= 0;
 
-  meanp += real(I*(2*conj(psi[0])*(psi[1]-psi[0])+conj(psi[1])*(psi[2]-psi[0])));
+  meanp += real(I*(2.0*conj(psi[0])*(psi[1]-psi[0])+conj(psi[1])*(psi[2]-psi[0])));
   for(std::size_t i = 1; i < psi.size()-2; i++)
   {
       meanp += real(I*(conj(psi[i])*(psi[i+1]-psi[i-1])+conj(psi[i+1])*(psi[i+2]-psi[i])));
   }
-  meanp += real(I*(conj(psi[psi.size()-2])*(psi[psi.size()-1]-psi[psi.size()-3])+2*conj(psi[psi.size()-1])*(psi[psi.size()-1]-psi[psi.size()-2])));
+  meanp += real(I*(conj(psi[psi.size()-2])*(psi[psi.size()-1]-psi[psi.size()-3])+2.0*conj(psi[psi.size()-1])*(psi[psi.size()-1]-psi[psi.size()-2])));
 
   return -hbar*meanp/4.0;
 }
