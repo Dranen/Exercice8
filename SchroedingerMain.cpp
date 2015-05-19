@@ -57,11 +57,12 @@ double getpotential(double alpha, double V0, double Rnucleus, double x)
 
 int main(int argc,char **argv) 
 {
-    double hbar = 1.;
+  double hbar = 1.;
   double mass = 0.5;
   double xl=-256;
   double xr=0.0;
   double L= xr-xl;
+  double xmean, xmean2, pmean, pmean2;
   int inucleus;
   string nom;
 
@@ -116,12 +117,12 @@ int main(int argc,char **argv)
   cin >> ndx;
 
   int nx = ndx + 1;  // nombre de points 
-  double dx = (xr-xl)/(ndx+2);
+  double dx = (xr-xl)/ndx;
   vector<double> x(nx);
   
   // les points du maillage
   for(int i = 0; i < nx; ++i)
-    x[i] = xl + (i+1) * dx;
+    x[i] = xl + i * dx;
 
   for(int i = 0; i < nx && x[i] < -Rnucleus; i++)
   {
@@ -142,13 +143,26 @@ int main(int argc,char **argv)
 
   vector<complex<double> > dA(nx), dB(nx), aA(ndx, -(hbar*dt*I)/(4*mass*dx*dx)), aB(ndx, (hbar*dt*I)/(4*mass*dx*dx)), cA(ndx, -(hbar*dt*I)/(4*mass*dx*dx)), cB(ndx, (hbar*dt*I)/(4*mass*dx*dx));
 
-  for(int i = 0; i < nx; i++)
+  for(int i = 1; i < ndx; i++)
   {
 
       dH[i] = (hbar*hbar)/(mass*dx*dx)+getpotential(alpha,V0,Rnucleus,x[i]);
       dA[i] = 1.0+I*dH[i]*dt/(2*hbar);
       dB[i] = 1.0-I*dH[i]*dt/(2*hbar);
   }
+  //adaptation des matrices pour tenir compte des conditions aux bords
+  dA[0] = 1.0;
+  dB[0] = 1.0;
+  dH[0] = 0.0;
+  dA[ndx] = 1.0;
+  dB[ndx] = 1.0;
+  dH[ndx] = 0.0;
+  cA[0] = 0.0;
+  cB[0] = 0.0;
+  cH[0] = 0.0;
+  aA[ndx-1] = 0.0;
+  aB[ndx-1] = 0.0;
+  aH[ndx-1] = 0.0;
 
   // prepare la fonction d'onde initiale;
   for(int i = 0; i < nx; ++i) 
@@ -165,7 +179,7 @@ int main(int argc,char **argv)
   
   for(int i = 0; i < nx; ++i)
     psi_now[i] /= pre_norm;
-  
+
   cerr << "pre_norm = " << pre_norm << endl;
   // verifier que la norme vaut un
   cerr << "Norm = " << probability(psi_now,0,nx-1,dx) << endl;
@@ -177,6 +191,10 @@ int main(int argc,char **argv)
   cerr << "<p> = "<< getmeanp(psi_now,hbar) << endl;
   cerr << "<pp> = "<< getmeanp2(psi_now,dx,hbar) << endl;
   
+  xmean = getmeanx(psi_now, x, dx);
+  xmean2 = getmeanx2(psi_now,x,dx);
+  pmean = getmeanp(psi_now,hbar);
+  pmean2 = getmeanp2(psi_now,hbar);
   cout << 0. << " "
        << probability(psi_now,0,inucleus,dx) << " "  // proba "`a gauche"
        << probability(psi_now,inucleus,ndx,dx) << " " // proba "\`a droite"
@@ -184,7 +202,9 @@ int main(int argc,char **argv)
        << getmeanx2(psi_now,x,dx) << " "
        << getmeanp(psi_now,hbar) << " "
        << getmeanp2(psi_now,dx,hbar) << " "
-       << getenergy(psi_now,dH,aH,cH,dx) << endl;
+       << getenergy(psi_now,dH,aH,cH,dx) << " "
+       << sqrt(xmean2-xmean*xmean)<< " "
+       << sqrt(pmean2-pmean*pmean)<< endl;
        
   // ecrire la fonction d'onde initiale dans le fichier "psi.dat"
   ostringstream oss;
@@ -207,6 +227,10 @@ int main(int argc,char **argv)
         /*psi_next[0]=0;
         psi_next[psi_next.size()-1]=0;*/
       
+        xmean = getmeanx(psi_now, x, dx);
+        xmean2 = getmeanx2(psi_now,x,dx);
+        pmean = getmeanp(psi_now,hbar);
+        pmean2 = getmeanp2(psi_now,hbar);
       // output the probabilities "left" and "right", mean position and mean energy
       cout << time+dt << " "
        << probability(psi_next,0,inucleus,dx) << " "  // proba "`a gauche"
@@ -215,7 +239,9 @@ int main(int argc,char **argv)
        << getmeanx2(psi_next,x,dx) << " "
        << getmeanp(psi_next,hbar) << " "
        << getmeanp2(psi_next,dx,hbar)<< " "
-       << getenergy(psi_next,dH,aH,cH,dx) << endl; // proba "\`a droite"
+       << getenergy(psi_next,dH,aH,cH,dx) << " "
+       << sqrt(xmean2-xmean*xmean)<< " "
+       << sqrt(pmean2-pmean*pmean)<< endl;
            
       for(int i = 0; i < nx; ++i)
 	 {
@@ -244,12 +270,10 @@ double probability(const V& psi, int nl, int nr, double dx)
   {
       nr = psi.size()-1;
   }
-  retval += norm(psi[0]);
-  for(int i = nl; i < nr; i++)
+  for(int i = nl; i < (nr-1); i++)
   {
       retval += norm(psi[i])+norm(psi[i+1]);
   }
-  retval += norm(psi[nr-1]);
 
   return retval*dx/2;
 }
@@ -265,12 +289,10 @@ double getenergy(const vector<complex<double> >& psi, const vector<complex<doubl
   }
   psi_tmp[upperH.size()] = diagH[upperH.size()]*psi[upperH.size()] + lowerH[upperH.size()-1]*psi[upperH.size()-1];
 
-  energy += real(conj(psi[0])*psi_tmp[0]);
   for(std::size_t i = 0; i < upperH.size(); i++)
   {
       energy += real(conj(psi[i])*psi_tmp[i]+conj(psi[i+1])*psi_tmp[i+1]);
   }
-  energy += real(conj(psi[upperH.size()-1])*psi_tmp[upperH.size()-1]);
 
   return energy*dx/2;
 }
@@ -279,54 +301,55 @@ double getmeanx(const vector<complex<double> >& psi, const vector<double>& x, co
 {
   double meanx=0.;
 
-  meanx += real(conj(psi[0])*x[0]*psi[0]);
   for(std::size_t i = 0; i < psi.size()-1; i++)
   {
       meanx += real(conj(psi[i])*x[i]*psi[i])+real(conj(psi[i+1])*x[i+1]*psi[i+1]);
   }
-  meanx += real(conj(psi[psi.size()-1])*x[psi.size()-1]*psi[psi.size()-1]);
+
   return meanx*dx/2;
 }
 
 double getmeanx2(const vector<complex<double> >& psi, const vector<double>& x, const double & dx)
 {
   double meanx2=0.;
-  meanx2 += real(conj(psi[0])*x[0]*x[0]*psi[0]);
+
   for(std::size_t i = 0; i < psi.size()-1; i++)
   {
       meanx2 += real(conj(psi[i])*x[i]*x[i]*psi[i])+real(conj(psi[i+1])*x[i+1]*x[i+1]*psi[i+1]);
   }
-  meanx2 += real(conj(psi[psi.size()-1])*x[psi.size()-1]*x[psi.size()-1]*psi[psi.size()-1]);
+
   return meanx2*dx/2;
 }
 
 double getmeanp(const vector<complex<double> >& psi, const double& hbar)
 {
   double meanp= 0;
-  meanp += real(I*(conj(psi[0])*(psi[1])));
-  meanp += real(I*(conj(psi[0])*(psi[1])+conj(psi[1])*(psi[2]-psi[0])));
+
+  meanp += real(I*(2*conj(psi[0])*(psi[1]-psi[0])+conj(psi[1])*(psi[2]-psi[0])));
   for(std::size_t i = 1; i < psi.size()-2; i++)
   {
       meanp += real(I*(conj(psi[i])*(psi[i+1]-psi[i-1])+conj(psi[i+1])*(psi[i+2]-psi[i])));
   }
-  meanp += real(I*(conj(psi[psi.size()-2])*(psi[psi.size()-1]-psi[psi.size()-3])+conj(psi[psi.size()-1])*(-psi[psi.size()-2])));
-  meanp += real(conj(psi[psi.size()-1])*(-psi[psi.size()-2]));
+  meanp += real(I*(conj(psi[psi.size()-2])*(psi[psi.size()-1]-psi[psi.size()-3])+2*conj(psi[psi.size()-1])*(psi[psi.size()-1]-psi[psi.size()-2])));
+
   return -hbar*meanp/4.0;
 }
 
 double getmeanp2(const vector<complex<double> >& psi, const double & dx, const double& hbar)
 {
   double meanp2=0;
-  meanp2 += real(conj(psi[0])*(psi[1]-2.0*psi[0]));
-  meanp2 += real(conj(psi[0])*(psi[1]-2.0*psi[0])+conj(psi[1])*(psi[2]-2.0*psi[1]+psi[0]));
+
+  meanp2 += real(conj(psi[1])*(psi[2]-2.0*psi[1]+psi[0]));
   for(std::size_t i = 1; i < psi.size()-2; i++)
   {
       meanp2 += real(conj(psi[i])*(psi[i+1]-2.0*psi[i]+psi[i-1])+conj(psi[i+1])*(psi[i+2]-2.0*psi[i+1]+psi[i]));
   }
-  meanp2 += real(conj(psi[psi.size()-2])*(psi[psi.size()-1]-2.0*psi[psi.size()-2]+psi[psi.size()-3])+conj(psi[psi.size()-1])*(-2.0*psi[psi.size()-1]+psi[psi.size()-2]));
-  meanp2 += real(conj(psi[psi.size()-1])*(-2.0*psi[psi.size()-1]+psi[psi.size()-2]));
+  meanp2 += real(conj(psi[psi.size()-2])*(psi[psi.size()-1]-2.0*psi[psi.size()-2]+psi[psi.size()-3]));
+
   return -hbar*hbar*meanp2/(2.0*dx);
 }
+
+
 
 
 //
