@@ -1,4 +1,4 @@
-function Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx)
+function Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, question, mode, nbsim, ndx_max, dt_max)
 
 workingfolder = './';
 binfilename = 'Exercice8';
@@ -29,6 +29,23 @@ fprintf( fid, num2str(tfinal));
 fprintf( fid, '\n');
 fprintf( fid, num2str(ndx));
 fprintf( fid, '\n');
+fprintf( fid, num2str(question));
+fprintf( fid, '\n');
+fprintf( fid, num2str(mode));
+fprintf( fid, '\n');
+
+if(mode == 2)
+   fprintf( fid, num2str(nbsim));
+   fprintf( fid, '\n'); 
+   fprintf( fid, num2str(ndx_max));
+   fprintf( fid, '\n'); 
+end
+if(mode == 3)
+   fprintf( fid, num2str(nbsim));
+   fprintf( fid, '\n'); 
+   fprintf( fid, num2str(dt_max));
+   fprintf( fid, '\n'); 
+end
 
 fclose( fid );
 
