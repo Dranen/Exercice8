@@ -210,6 +210,11 @@ int main(int argc,char **argv)
   ostringstream oss;
   oss << nom + "_psi.dat";
 
+  //pour ecrire max dans noyauofstream sortie;
+  ofstream max_noy;
+  max_noy.open("max_noy_alpha.dat", ios::out|ios::app);
+  double max_prob_noy(0);
+
   ofstream ofs(oss.str().c_str()); // asci
     for(int i = 0; i < nx; ++i)
       ofs << 0 << " " << x[i] << " " << abs(psi_now[i]) * abs(psi_now[i]) << endl;
@@ -250,9 +255,15 @@ int main(int argc,char **argv)
 	 }
       
       psi_now = psi_next;
+      if(probability(psi_now, ndx-ndx/(xr-xl)*Rnucleus, ndx, dx)>max_prob_noy){
+          max_prob_noy=probability(psi_now,ndx- ndx/(xr-xl)*Rnucleus, ndx , dx);
+      }
+      //std::cerr << int(ndx/(xr-xl)*Rnucleus) << ' ' << ndx << std::endl;
 
     } // end of time evolution loop
 
+    max_noy << alpha << ' ' << max_prob_noy << endl;
+    max_noy.close();
   ofs.close();
 
 } // end of main(...)
