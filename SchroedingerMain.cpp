@@ -163,78 +163,6 @@ int main(int argc,char **argv)
 
 } // end of main(...)
 
-<<<<<<< HEAD
-      dH[i] = (hbar*hbar)/(mass*dx*dx)+getpotential(alpha,V0,Rnucleus,x[i]);
-      dA[i] = 1.0+I*dH[i]*dt/(2*hbar);
-      dB[i] = 1.0-I*dH[i]*dt/(2*hbar);
-  }
-  //adaptation des matrices pour tenir compte des conditions aux bords
-  dA[0] = 1.0;
-  dB[0] = 1.0;
-  dH[0] = 0.0;
-  dA[ndx] = 1.0;
-  dB[ndx] = 1.0;
-  dH[ndx] = 0.0;
-  cA[0] = 0.0;
-  cB[0] = 0.0;
-  cH[0] = 0.0;
-  aA[ndx-1] = 0.0;
-  aB[ndx-1] = 0.0;
-  aH[ndx-1] = 0.0;
-
-  // prepare la fonction d'onde initiale;
-  for(int i = 0; i < nx; ++i) 
-  {
-      psi_next[i] = 0.0;
-      psi_now[i] = exp(complex_I * zk * x[i]) * exp( -(x[i] - x0) *(x[i] - x0)/(2.0 * sigma0 * sigma0) );
-  }
-  psi_now[0] = 0;
-  psi_now[nx-1] = 0;
-  
-  // normaliser la fonction d'onde
-  double pre_norm = sqrt(probability(psi_now,0,nx-1,dx)); // à vérifier
-  if(pre_norm==0){pre_norm=1;}
-  
-  for(int i = 0; i < nx; ++i)
-    psi_now[i] /= pre_norm;
-
-  cerr << "pre_norm = " << pre_norm << endl;
-  // verifier que la norme vaut un
-  cerr << "Norm = " << probability(psi_now,0,nx-1,dx) << endl;
-  // ecrire l'energie moyenne initiale
-  cerr << "<H> = " << getenergy(psi_now, dH, aH, cH, dx) << endl;
-  // ecrire la position moyenne initiale
-  cerr << "<x> = " << getmeanx(psi_now, x, dx) << endl;
-  cerr << "V(0) = " << getpotential(alpha, V0, Rnucleus , 0.0) << endl;
-  cerr << "<p> = "<< getmeanp(psi_now,hbar) << endl;
-  cerr << "<pp> = "<< getmeanp2(psi_now,dx,hbar) << endl;
-  
-  xmean = getmeanx(psi_now, x, dx);
-  xmean2 = getmeanx2(psi_now,x,dx);
-  pmean = getmeanp(psi_now,hbar);
-  pmean2 = getmeanp2(psi_now,hbar,dx);
-  cout << 0. << " "
-       << probability(psi_now,0,inucleus,dx) << " "  // proba "`a gauche"
-       << probability(psi_now,inucleus,ndx,dx) << " " // proba "\`a droite"
-       << getmeanx(psi_now,x,dx) << " "
-       << getmeanx2(psi_now,x,dx) << " "
-       << getmeanp(psi_now,hbar) << " "
-       << getmeanp2(psi_now,dx,hbar) << " "
-       << getenergy(psi_now,dH,aH,cH,dx) << " "
-       << sqrt(abs(xmean2-xmean*xmean))<< " "
-       << sqrt(abs(pmean2-pmean*pmean))<< endl;
-       
-  // ecrire la fonction d'onde initiale dans le fichier "psi.dat"
-  ostringstream oss;
-  oss << nom + "_psi.dat";
-
-  //pour ecrire max dans noyauofstream sortie;
-  ofstream max_noy;
-  max_noy.open("max_noy_alpha.dat", ios::out|ios::app);
-  double max_prob_noy(0);
-
-  ofstream ofs(oss.str().c_str()); // asci
-=======
 
 void simulation(string const& nom, double n, double alpha, double Rnucleus, double V0, double x0, double sigma0, double dt, double tfinal, int ndx, int mode, int question)
 {
@@ -296,7 +224,6 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     aH[ndx-1] = 0.0;
 
     // prepare la fonction d'onde initiale;
->>>>>>> d67a019d7cf8aba70406c590132adbf420a34217
     for(int i = 0; i < nx; ++i)
     {
         psi_next[i] = 0.0;
@@ -347,6 +274,12 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     oss << nom + "_psi.dat";
     ofstream ofs(oss.str().c_str()); //asci
 
+
+    //pour ecrire max dans noyau ofstream sortie;
+    ofstream max_noy;
+    max_noy.open("max_noy_alpha.dat", ios::out|ios::app);
+    double max_prob_noy(0);
+
     if(mode == 1)
     {
           for(int i = 0; i < nx; ++i)
@@ -392,55 +325,19 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
             ofs << time << " " << x[i] << " " << abs(psi_next[i]) * abs(psi_next[i]) << endl;
            }
         }
-<<<<<<< HEAD
-        psi_next[ndx] = dB[ndx]*psi_now[ndx] + aB[ndx-1]*psi_now[ndx-1];
-
-        triangular_solve(dA, aA, cA, psi_next, psi_next);
-        /*psi_next[0]=0;
-        psi_next[psi_next.size()-1]=0;*/
-      
-        xmean = getmeanx(psi_now, x, dx);
-        xmean2 = getmeanx2(psi_now,x,dx);
-        pmean = getmeanp(psi_now,hbar);
-        pmean2 = getmeanp2(psi_now,hbar,dx);
-      // output the probabilities "left" and "right", mean position and mean energy
-      cout << time+dt << " "
-       << probability(psi_next,0,inucleus,dx) << " "  // proba "`a gauche"
-       << probability(psi_next,inucleus,ndx,dx) << " " // proba "\`a droite"
-	   << getmeanx(psi_next,x,dx) << " "            // mean position 
-       << getmeanx2(psi_next,x,dx) << " "
-       << getmeanp(psi_next,hbar) << " "
-       << getmeanp2(psi_next,dx,hbar)<< " "
-       << getenergy(psi_next,dH,aH,cH,dx) << " "
-       << sqrt(abs(xmean2-xmean*xmean))<< " "
-       << sqrt(abs(pmean2-pmean*pmean))<< endl;
-           
-      for(int i = 0; i < nx; ++i)
-	 {
-	  // asci mode
-	  ofs << time << " " << x[i] << " " << abs(psi_next[i]) * abs(psi_next[i]) << endl;
-	 }
-      
-      psi_now = psi_next;
-      if(probability(psi_now, ndx-ndx/(xr-xl)*Rnucleus, ndx, dx)>max_prob_noy){
-          max_prob_noy=probability(psi_now,ndx- ndx/(xr-xl)*Rnucleus, ndx , dx);
-      }
-      //std::cerr << int(ndx/(xr-xl)*Rnucleus) << ' ' << ndx << std::endl;
-
-
-    } // end of time evolution loop
-
-    max_noy << alpha << ' ' << max_prob_noy << endl;
-    max_noy.close();
-  ofs.close();
-
-} // end of main(...)
-=======
->>>>>>> d67a019d7cf8aba70406c590132adbf420a34217
 
         psi_now = psi_next;
 
+        if(probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx, dx)>max_prob_noy){
+            max_prob_noy=probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx , dx);
+        }
+
       } // end of time evolution loop
+
+      max_noy << alpha << ' ' << max_prob_noy << endl;
+      max_noy.close();
+
+
       if(mode == 1)
       {
             ofs.close();

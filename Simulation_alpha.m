@@ -8,8 +8,8 @@ dt = 0.5;
 tfinal = 500;
 ndx = 1024;
 
-for alpha=5:5:100
-Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx);
+for alpha=1:3:100
+Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, 1, 1, 1, 0, 0);
 alpha
 end
 
