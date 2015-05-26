@@ -327,13 +327,12 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
 
         psi_now = psi_next;
 
-        if(probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx, dx)>max_prob_noy){
-			std::cerr << "plus grand " << probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx , dx) << std::endl;
-            max_prob_noy=probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx , dx);
+        if(probability(psi_now, ndx-ndx/(xr-xl)*Rnucleus, ndx, dx)>max_prob_noy){
+			
+            max_prob_noy=probability(psi_now, ndx-ndx/(xr-xl)*Rnucleus, ndx , dx);
         }
 
       } // end of time evolution loop
-      std::cerr << "pouet" << std::endl;
       max_noy << alpha << ' ' << max_prob_noy << endl;
       max_noy.close();
 
