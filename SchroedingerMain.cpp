@@ -346,11 +346,23 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
 
         psi_now = psi_next;
 
+<<<<<<< HEAD
         if(mode == 4 && probnoyeau>max_prob_noy){
             max_prob_noy=probnoyeau;
         }
 
       } // end of time evolution loop
+=======
+        if(probability(psi_now, ndx-ndx/(xr-xl)*Rnucleus, ndx, dx)>max_prob_noy){
+			
+            max_prob_noy=probability(psi_now, ndx-ndx/(xr-xl)*Rnucleus, ndx , dx);
+        }
+
+      } // end of time evolution loop
+      max_noy << alpha << ' ' << max_prob_noy << endl;
+      max_noy.close();
+
+>>>>>>> 767051b823762d95376b48ddf8556674237f7bb6
 
       if(mode == 4)
       {
