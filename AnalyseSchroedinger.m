@@ -99,7 +99,7 @@ figure
 plot(t,Pleft,'k-', t,Pright,'r-', 'linewidth',lw);
 set(gca,'fontsize',fs)
 xlabel('t')
-ylabel('P')
+ylabel('Probabilité')
 
 % figure
 % for i = 1:max(size(t))
