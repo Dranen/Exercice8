@@ -141,7 +141,6 @@ int main(int argc,char **argv)
         cerr << "dt arrêt : " << endl;
         cin >> dt_max;
     }
-
     if(mode == 2)
     {
         for(int i = 0; i < nbsim; i++)
@@ -274,6 +273,12 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     oss << nom + "_psi.dat";
     ofstream ofs(oss.str().c_str()); //asci
 
+
+    //pour ecrire max dans noyau ofstream sortie;
+    ofstream max_noy;
+    max_noy.open("max_noy_alpha.dat", ios::out|ios::app);
+    double max_prob_noy(0);
+
     if(mode == 1)
     {
           for(int i = 0; i < nx; ++i)
@@ -322,7 +327,17 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
 
         psi_now = psi_next;
 
+        if(probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx, dx)>max_prob_noy){
+			std::cerr << "plus grand " << probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx , dx) << std::endl;
+            max_prob_noy=probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx , dx);
+        }
+
       } // end of time evolution loop
+      std::cerr << "pouet" << std::endl;
+      max_noy << alpha << ' ' << max_prob_noy << endl;
+      max_noy.close();
+
+
       if(mode == 1)
       {
             ofs.close();
