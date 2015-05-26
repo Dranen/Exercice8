@@ -198,7 +198,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
 
     for(int i = 0; i < nx && x[i] <= -Rnucleus; i++)
     {
-        inucleus = x[i];
+        inucleus = i;
     }
 
     // les fonctions d'onde
@@ -246,7 +246,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     psi_now[nx-1] = 0;
 
     // normaliser la fonction d'onde
-    double pre_norm = sqrt(probability(psi_now,0,nx-1,dx)); // à vérifier
+    double pre_norm = sqrt(probability(psi_now,0,nx-1,dx));
     if(pre_norm==0){pre_norm=1;}
 
     for(int i = 0; i < nx; ++i)
@@ -293,7 +293,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     ofstream max_noy;
     if(mode == 4)
     {
-        max_noy.open("max_noy_alpha.dat");
+        max_noy.open("max_noy_alpha.dat", ios::out|ios::app);
     }
     double max_prob_noy(0);
 
