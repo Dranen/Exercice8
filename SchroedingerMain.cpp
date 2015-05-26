@@ -47,7 +47,7 @@ double getmeanx(const vector<complex<double> >& psi, const vector<double>& x, co
 double getmeanx2(const vector<complex<double> >& psi, const vector<double>& x, const double &);
 double getmeanp(const vector<complex<double> >& psi, const double & hbar);
 double getmeanp2(const vector<complex<double> >& psi, const double & dx, const double& hbar);
-void simulation(string const& nom, double n, double alpha, double Rnucleus, double V0, double x0, double sigma0, double dt, double tfinal, int ndx, int mode, int question);
+void simulation(string const& nom, double n, double alpha, double Rnucleus, double V0, double x0, double sigma0, double dt, double tfinal, int ndx, int mode, int question, int echt);
 
 // fonction qui calcule le potentiel
 double getpotential(double alpha, double V0, double Rnucleus, double x)
@@ -111,6 +111,10 @@ int main(int argc,char **argv)
   cerr << "nombre d'intervales en x: ndx= " << endl;
   cin >> ndx;
 
+  int echt = 1;   // nombre d'intervalles
+  cerr << "Echantillonage temps" << endl;
+  cin >> echt;
+
   int question = 1;
   cerr << "Choix potentiel: (1) fusion" << endl;
   cin >> question;
@@ -152,32 +156,32 @@ int main(int argc,char **argv)
     {
         for(int i = 0; i < nbsim; i++)
         {
-            simulation(nom, n, alpha, Rnucleus, V0, x0, sigma0, dt, tfinal, static_cast<int>(static_cast<double>(i)*static_cast<double>(ndx_max-ndx)/static_cast<double>(nbsim-1))+ndx, mode, question);
+            simulation(nom, n, alpha, Rnucleus, V0, x0, sigma0, dt, tfinal, static_cast<int>(static_cast<double>(i)*static_cast<double>(ndx_max-ndx)/static_cast<double>(nbsim-1))+ndx, mode, question, echt);
         }
     }
     else if(mode == 3)
     {
         for(int i = 0; i < nbsim; i++)
         {
-            simulation(nom, n, alpha, Rnucleus, V0, x0, sigma0, (static_cast<double>(i)*(dt_max-dt)/static_cast<double>(nbsim-1))+dt, tfinal, ndx, mode, question);
+            simulation(nom, n, alpha, Rnucleus, V0, x0, sigma0, (static_cast<double>(i)*(dt_max-dt)/static_cast<double>(nbsim-1))+dt, tfinal, ndx, mode, question, echt);
         }
     }
     else if(mode == 4)
     {
         for(int i = 0; i < nbsim; i++)
         {
-            simulation(nom, n, (static_cast<double>(i)*(alpha_max-alpha)/static_cast<double>(nbsim-1))+alpha, Rnucleus, V0, x0, sigma0, dt, tfinal, ndx, mode, question);
+            simulation(nom, n, (static_cast<double>(i)*(alpha_max-alpha)/static_cast<double>(nbsim-1))+alpha, Rnucleus, V0, x0, sigma0, dt, tfinal, ndx, mode, question, echt);
         }
     }
     else
     {
-        simulation(nom, n, alpha, Rnucleus, V0, x0, sigma0, dt, tfinal, ndx, mode, question);
+        simulation(nom, n, alpha, Rnucleus, V0, x0, sigma0, dt, tfinal, ndx, mode, question, echt);
     }
 
 } // end of main(...)
 
 
-void simulation(string const& nom, double n, double alpha, double Rnucleus, double V0, double x0, double sigma0, double dt, double tfinal, int ndx, int mode, int question)
+void simulation(string const& nom, double n, double alpha, double Rnucleus, double V0, double x0, double sigma0, double dt, double tfinal, int ndx, int mode, int question, int echt)
 {
     double hbar = 1.;
     double mass = 0.5;
@@ -185,7 +189,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     double xr=0.0;
     double L= xr-xl;
     double xmean, xmean2, pmean, pmean2, probnoyeau;
-    int inucleus=1;
+    int inucleus=1, counter = 0;
     double zk = 2.0 * M_PI * n/L;
 
     int nx = ndx + 1;  // nombre de points
@@ -305,6 +309,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
 
       for(double time = 0; time < tfinal - dt/2.; time += dt)
       {
+          counter++;
           psi_next[0] = dB[0]*psi_now[0] + cB[0]*psi_now[1];
           for(int i = 1; i < ndx; i++)
           {
@@ -335,13 +340,14 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
              << sqrt(abs(xmean2-xmean*xmean))<< " "
              << sqrt(abs(pmean2-pmean*pmean))<< endl;
         }
-        if(mode == 1)
+        if(mode == 1 && counter >= echt)
         {
            for(int i = 0; i < nx; ++i)
            {
             // asci mode
             ofs << time << " " << x[i] << " " << abs(psi_next[i]) * abs(psi_next[i]) << endl;
            }
+           counter = 0;
         }
 
         psi_now = psi_next;

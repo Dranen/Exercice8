@@ -18,42 +18,42 @@ m=1;
 n=3;
 
 figure
-plot(dt,p)
+loglog(dt,p)
 xlabel('dt')
 ylabel('p')
 figure
-plot(dt,p2)
+loglog(dt,p2)
 xlabel('dt')
 ylabel('p^2')
 
 figure
 grid on
-plot(dt,errX)
+loglog(dt,errX)
 xlabel('dt')
 ylabel('\Delta x')
 figure
 grid
-plot(dt,errP)
+loglog(dt,errP)
 xlabel('dt')
 ylabel('\Delta p')
 
 figure
 grid on
-plot(dt,errX.*errP)
+loglog(dt,errX.*errP)
 
 figure
-plot(dt,Emean)
+loglog(dt,Emean)
 xlabel('dt')
 ylabel('E')
 
 figure
-plot(dt,xmean,'k-','linewidth',lw);
+loglog(dt,xmean,'k-','linewidth',lw);
 set(gca,'fontsize',fs)
 xlabel('dt')
 ylabel('<x>')
 
 figure
-plot(dt,Pleft,'k-', dt,Pright,'r-', 'linewidth',lw);
+loglog(dt,Pleft,'k-', dt,Pright,'r-', 'linewidth',lw);
 set(gca,'fontsize',fs)
 xlabel('dt')
 ylabel('P')
@@ -69,11 +69,19 @@ ylabel('P')
  loglog(dt,exp(feval(fitobject,log(dt))),'--r')
  text(dt(round(end/2)),abs((xmean(round(end/2))-xsup)/xsup),['pente = ',num2str(fitobject.p1)],'VerticalAlignment','Bottom')
  set(gcf,'PaperPositionMode','auto')
+ 
+ errXsup = -81.918;
+ fig=figure('Position', [0 00 641 300])
+ set(gca, 'fontsize', 12);
+ loglog(dt,abs((errX-errXsup)/errXsup),'x');
+ xlabel('dt');
+ ylabel('erreur(<x>)');
+ fitobject = fit(log(dt),log(abs((errX-errXsup)/errXsup)),'poly1');
+ hold on
+ loglog(dt,exp(feval(fitobject,log(dt))),'--r')
+ text(dt(round(end/2)),abs((errX(round(end/2))-errXsup)/errXsup),['pente = ',num2str(fitobject.p1)],'VerticalAlignment','Bottom')
+ set(gcf,'PaperPositionMode','auto')
 
-% figure
-% for i = 1:max(size(t))
-%     plot(X,psiabs2(:,i));
-%     pause(0.01);
-% end
+ 
 
 

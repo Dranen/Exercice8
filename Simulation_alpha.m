@@ -10,7 +10,7 @@ ndx = 1024;
 alpha = 0;
 
 delete('max_noy_alpha.dat');
-Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, 1, 4, 100, 0, 0, 100);
+Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, 1, 1, 4, 100, 0, 0, 100);
 
 
 plot_alpha;
