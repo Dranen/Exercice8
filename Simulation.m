@@ -46,7 +46,7 @@ if(mode == 3)
    fprintf( fid, num2str(nbsim));
    fprintf( fid, '\n'); 
    fprintf( fid, num2str(dt_max));
-   fprintf( fid, '\n'); 
+   fprintf( fid, '\n');
 end
 if(mode == 4)
    fprintf( fid, num2str(nbsim));

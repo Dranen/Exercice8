@@ -72,14 +72,6 @@ figure
 loglog(dt,Pleft,'k-', dt,Pright,'r-', 'linewidth',lw);
 set(gca,'fontsize',fs)
 xlabel('dt')
-ylabel('p')
-saveas(gcf, [fname, '_dt_p.fig'])
-saveas(gcf, [fname, '_dt_p.eps'], 'epsc')
-
-figure
-plot(dt,Pleft,'k-', t,Pright,'r-', 'linewidth',lw);
-set(gca,'fontsize',fs)
-xlabel('dt')
 ylabel('Probabilité')
 saveas(gcf, [fname, '_dt_prob.fig'])
 saveas(gcf, [fname, '_dt_prob.eps'], 'epsc')
