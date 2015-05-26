@@ -11,6 +11,6 @@ ndx = 1024;
 nbsim = 100;
 dt_max = 1;
 
-Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, 1, 3, nbsim, 0, dt_max);
+Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, 1, 3, nbsim, 0, dt_max, 0);
 
 AnalyseSchroedinger_convergence_dt(name);

@@ -9,6 +9,6 @@ dt = 1;
 tfinal = 2500;
 ndx = 1024;
 
-Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, 1, 1, 1, 0, 0);
+Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, 1, 1, 1, 0, 0, 0);
 
 AnalyseSchroedinger(name);

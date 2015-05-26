@@ -116,7 +116,7 @@ int main(int argc,char **argv)
   cin >> question;
 
   int mode = 1;
-  cerr << "Mode de fonctionnement : (1) unique, (2) convergence nombre d'intervalle, (3) convergence dt" << endl;
+  cerr << "Mode de fonctionnement : (1) unique, (2) convergence nombre d'intervalle, (3) convergence dt, (4) scan alpha" << endl;
   cin >> mode;
 
     int nbsim = 1;
@@ -141,6 +141,13 @@ int main(int argc,char **argv)
         cerr << "dt arrêt : " << endl;
         cin >> dt_max;
     }
+    double alpha_max = 2*alpha;
+    if(mode == 4)
+    {
+        cerr << "Alpha maximale : " << endl;
+        cin >> alpha_max;
+    }
+
     if(mode == 2)
     {
         for(int i = 0; i < nbsim; i++)
@@ -153,6 +160,13 @@ int main(int argc,char **argv)
         for(int i = 0; i < nbsim; i++)
         {
             simulation(nom, n, alpha, Rnucleus, V0, x0, sigma0, (static_cast<double>(i)*(dt_max-dt)/static_cast<double>(nbsim-1))+dt, tfinal, ndx, mode, question);
+        }
+    }
+    else if(mode == 4)
+    {
+        for(int i = 0; i < nbsim; i++)
+        {
+            simulation(nom, n, (static_cast<double>(i)*(alpha_max-alpha)/static_cast<double>(nbsim-1))+alpha, Rnucleus, V0, x0, sigma0, dt, tfinal, ndx, mode, question);
         }
     }
     else
@@ -170,7 +184,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     double xl=-256;
     double xr=0.0;
     double L= xr-xl;
-    double xmean, xmean2, pmean, pmean2;
+    double xmean, xmean2, pmean, pmean2, probnoyeau;
     int inucleus=1;
     double zk = 2.0 * M_PI * n/L;
 
@@ -182,9 +196,9 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     for(int i = 0; i < nx; ++i)
       x[i] = xl + i * dx;
 
-    for(int i = 0; i < nx && x[i] < -Rnucleus; i++)
+    for(int i = 0; i < nx && x[i] <= -Rnucleus; i++)
     {
-        inucleus = Rnucleus;
+        inucleus = x[i];
     }
 
     // les fonctions d'onde
@@ -250,6 +264,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     cerr << "<pp> = "<< getmeanp2(psi_now,dx,hbar) << endl;
     cerr << "dt = " << dt << endl;
     cerr << "ndx = " << ndx << endl;
+    cerr << "alpha = " << alpha << endl;
 
     xmean = getmeanx(psi_now, x, dx);
     xmean2 = getmeanx2(psi_now,x,dx);
@@ -276,7 +291,10 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
 
     //pour ecrire max dans noyau ofstream sortie;
     ofstream max_noy;
-    max_noy.open("max_noy_alpha.dat", ios::out|ios::app);
+    if(mode == 4)
+    {
+        max_noy.open("max_noy_alpha.dat");
+    }
     double max_prob_noy(0);
 
     if(mode == 1)
@@ -302,12 +320,13 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
           xmean2 = getmeanx2(psi_now,x,dx);
           pmean = getmeanp(psi_now,hbar);
           pmean2 = getmeanp2(psi_now,hbar,dx);
+          probnoyeau = probability(psi_next,inucleus,ndx,dx);
         // output the probabilities "left" and "right", mean position and mean energy
         if(mode == 1)
         {
             cout << time+dt << " "
              << probability(psi_next,0,inucleus,dx) << " "  // proba "`a gauche"
-             << probability(psi_next,inucleus,ndx,dx) << " " // proba "\`a droite"
+             << probnoyeau << " " // proba "\`a droite"
              << getmeanx(psi_next,x,dx) << " "            // mean position
              << getmeanx2(psi_next,x,dx) << " "
              << getmeanp(psi_next,hbar) << " "
@@ -327,17 +346,17 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
 
         psi_now = psi_next;
 
-        if(probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx, dx)>max_prob_noy){
-			std::cerr << "plus grand " << probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx , dx) << std::endl;
-            max_prob_noy=probability(psi_now, ndx/(xr-xl)*Rnucleus, ndx , dx);
+        if(mode == 4 && probnoyeau>max_prob_noy){
+            max_prob_noy=probnoyeau;
         }
 
       } // end of time evolution loop
-      std::cerr << "pouet" << std::endl;
-      max_noy << alpha << ' ' << max_prob_noy << endl;
-      max_noy.close();
 
-
+      if(mode == 4)
+      {
+          max_noy << alpha << ' ' << max_prob_noy << endl;
+          max_noy.close();
+      }
       if(mode == 1)
       {
             ofs.close();
