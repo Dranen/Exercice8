@@ -9,8 +9,8 @@ dt = 0.05;
 tfinal = 500;
 ndx = 1024;
 nbsim = 100;
-ndx_max = 4096;
+ndx_max = 1024*1.5;
 
-Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, 1, 1, 3, nbsim, ndx_max, 0, 0);
+Simulation(name, n, alpha, Rnucleus, V0, x0, sigmanorm, dt, tfinal, ndx, 1, 1, 2, nbsim, ndx_max, 0, 0);
 
 AnalyseSchroedinger_convergence_dx(name);

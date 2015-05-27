@@ -18,13 +18,15 @@ m=1;
 n=3;
 
 figure
-loglog(dt,p)
+loglog(dt,p,'x')
+set(gca,'fontsize',fs)
 xlabel('dt')
 ylabel('p')
 saveas(gcf, [fname, '_dt_p.fig'])
 saveas(gcf, [fname, '_dt_p.eps'], 'epsc')
 figure
-loglog(dt,p2)
+loglog(dt,p2,'x')
+set(gca,'fontsize',fs)
 xlabel('dt')
 ylabel('p^2')
 saveas(gcf, [fname, '_dt_p2.fig'])
@@ -32,14 +34,16 @@ saveas(gcf, [fname, '_dt_p2.eps'], 'epsc')
 
 figure
 grid on
-loglog(dt,errX)
+loglog(dt,errX,'x')
+set(gca,'fontsize',fs)
 xlabel('dt')
 ylabel('\Delta x')
 saveas(gcf, [fname, '_dt_delta_x.fig'])
 saveas(gcf, [fname, '_dt_delta_x.eps'], 'epsc')
 figure
 grid
-loglog(dt,errP)
+loglog(dt,errP,'x')
+set(gca,'fontsize',fs)
 xlabel('dt')
 ylabel('\Delta p')
 saveas(gcf, [fname, '_dt_delta_p.fig'])
@@ -47,14 +51,16 @@ saveas(gcf, [fname, '_dt_delta_p.eps'], 'epsc')
 
 figure
 grid on
-loglog(dt,errX.*errP)
+loglog(dt,errX.*errP,'x')
+set(gca,'fontsize',fs)
 xlabel('dt')
 ylabel('(\Delta p)(\Delta x)')
 saveas(gcf, [fname, '_dt_delta.fig'])
 saveas(gcf, [fname, '_dt_delta.eps'], 'epsc')
 
 figure
-loglog(dt,Emean)
+loglog(dt,Emean,'x')
+set(gca,'fontsize',fs)
 xlabel('dt')
 ylabel('E')
 saveas(gcf, [fname, '_dt_E.fig'])

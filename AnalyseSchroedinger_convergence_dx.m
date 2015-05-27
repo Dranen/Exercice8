@@ -18,13 +18,15 @@ m=1;
 n=3;
 
 figure
-loglog(dx,p)
+loglog(dx,p,'x')
+set(gca,'fontsize',fs)
 xlabel('dx')
 ylabel('p')
 saveas(gcf, [fname, '_dx_p.fig'])
 saveas(gcf, [fname, '_dx_p.eps'], 'epsc')
 figure
-loglog(dx,p2)
+loglog(dx,p2,'x')
+set(gca,'fontsize',fs)
 xlabel('dx')
 ylabel('p^2')
 saveas(gcf, [fname, '_dx_p2.fig'])
@@ -32,14 +34,16 @@ saveas(gcf, [fname, '_dx_p2.eps'], 'epsc')
 
 figure
 grid on
-loglog(dx,errX)
+loglog(dx,errX,'x')
+set(gca,'fontsize',fs)
 xlabel('dx')
 ylabel('\Delta x')
 saveas(gcf, [fname, '_dx_delta_x.fig'])
 saveas(gcf, [fname, '_dx_delta_x.eps'], 'epsc')
 figure
 grid
-loglog(dx,errP)
+loglog(dx,errP,'x')
+set(gca,'fontsize',fs)
 xlabel('dx')
 ylabel('\Delta p')
 saveas(gcf, [fname, '_dx_delta_p.fig'])
@@ -47,21 +51,23 @@ saveas(gcf, [fname, '_dx_delta_p.eps'], 'epsc')
 
 figure
 grid on
-loglog(dx,errX.*errP)
+loglog(dx,errX.*errP,'x')
+set(gca,'fontsize',fs)
 xlabel('dx')
 ylabel('(\Delta p)(\Delta x)')
 saveas(gcf, [fname, '_dx_delta.fig'])
 saveas(gcf, [fname, '_dx_delta.eps'], 'epsc')
 
 figure
-loglog(dx,Emean)
+loglog(dx,Emean,'x')
+set(gca,'fontsize',fs)
 xlabel('dx')
 ylabel('E')
 saveas(gcf, [fname, '_dx_E.fig'])
 saveas(gcf, [fname, '_dx_E.eps'], 'epsc')
 
 figure
-loglog(dx,xmean,'k-','linewidxh',lw);
+loglog(dx,xmean,'k-','linewidth',lw);
 set(gca,'fontsize',fs)
 xlabel('dx')
 ylabel('<x>')
@@ -69,7 +75,7 @@ saveas(gcf, [fname, '_dx_x.fig'])
 saveas(gcf, [fname, '_dx_x.eps'], 'epsc')
 
 figure
-loglog(dx,Pleft,'k-', dx,Pright,'r-', 'linewidxh',lw);
+loglog(dx,Pleft,'k-', dx,Pright,'r-', 'linewidth',lw);
 set(gca,'fontsize',fs)
 xlabel('dx')
 ylabel('Probabilité')
