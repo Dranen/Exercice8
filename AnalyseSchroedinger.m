@@ -64,11 +64,11 @@ ylabel('<x>')
 ErrorEnergyConserv=max(Emean)-min(Emean)
 
 %-- 2D plot |psi(x,t)|^2
-nt=length(t)
+nt=length(t);
 clear data
 data=load([fname '_psi.dat']);
-[nn,ii]=size(data)
-nx=nn/nt
+[nn,ii]=size(data);
+nx=nn/nt;
 xgrid=data(1:nx,2);
 zpsiabs2=data(:,3);
 psiabs2=reshape(zpsiabs2,nx,nt);
@@ -96,10 +96,13 @@ xlabel('x')
 ylabel('<x>')
 
 figure
-plot(t,Pleft,'k-', t,Pright,'r-', 'linewidth',lw);
+plot(t,Pleft,'k-', t,Pright,'r-',t,Pleft+Pright,'b-', 'linewidth',lw);
 set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('Probabilité')
+
+max(Pleft+Pright)
+min(Pleft+Pright)
 
 % figure
 % for i = 1:max(size(t))
