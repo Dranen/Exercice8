@@ -50,9 +50,31 @@ double getmeanp2(const vector<complex<double> >& psi, const double & dx, const d
 void simulation(string const& nom, double n, double alpha, double Rnucleus, double V0, double x0, double sigma0, double dt, double tfinal, int ndx, int mode, int question, int echt);
 
 // fonction qui calcule le potentiel
-double getpotential(double alpha, double V0, double Rnucleus, double x)
+double getpotential(double alpha, double V0, double Rnucleus, double x, int question)
 {
-  return (x<-Rnucleus)? -alpha/x : V0;
+    if(question == 2)
+    {
+        if(x > -Rnucleus-alpha && x < -Rnucleus+alpha)
+        {
+            return V0;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if(question == 3)
+    {
+        return V0+alpha*(x+Rnucleus)*(x+Rnucleus);
+    }
+    else if(question == 4)
+    {
+        return V0*sin(alpha*x + Rnucleus);
+    }
+    else
+    {
+        return (x<-Rnucleus)? -alpha/x : V0;
+    }
 }
 
 
@@ -222,7 +244,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     for(int i = 1; i < ndx; i++)
     {
 
-        dH[i] = (hbar*hbar)/(mass*dx*dx)+getpotential(alpha,V0,Rnucleus,x[i]);
+        dH[i] = (hbar*hbar)/(mass*dx*dx)+getpotential(alpha,V0,Rnucleus,x[i], question);
         dA[i] = 1.0+I*dH[i]*dt/(2*hbar);
         dB[i] = 1.0-I*dH[i]*dt/(2*hbar);
     }
@@ -263,7 +285,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
     cerr << "<H> = " << getenergy(psi_now, dH, aH, cH, dx) << endl;
     // ecrire la position moyenne initiale
     cerr << "<x> = " << getmeanx(psi_now, x, dx) << endl;
-    cerr << "V(0) = " << getpotential(alpha, V0, Rnucleus , 0.0) << endl;
+    cerr << "V(0) = " << getpotential(alpha, V0, Rnucleus , 0.0, question) << endl;
     cerr << "<p> = "<< getmeanp(psi_now,hbar) << endl;
     cerr << "<pp> = "<< getmeanp2(psi_now,dx,hbar) << endl;
     cerr << "dt = " << dt << endl;

@@ -18,11 +18,15 @@ plot(t,p,'linewidth',lw)
 set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('p')
+saveas(gcf, [fname, '_p.fig'])
+saveas(gcf, [fname, '_p.eps'], 'epsc')
 figure
 plot(t(2:end),p2(2:end),'linewidth',lw)
 set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('p^2')
+saveas(gcf, [fname, '_p2.fig'])
+saveas(gcf, [fname, '_p2.eps'], 'epsc')
 
 figure
 grid on
@@ -30,12 +34,16 @@ plot(t,errX,'linewidth',lw)
 set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('\Delta x')
+saveas(gcf, [fname, '_errX.fig'])
+saveas(gcf, [fname, '_errX.eps'], 'epsc')
 figure
 grid
 plot(t,errP,'linewidth',lw)
 set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('\Delta p')
+saveas(gcf, [fname, '_errP.fig'])
+saveas(gcf, [fname, '_errP.eps'], 'epsc')
 
 figure
 grid on
@@ -45,12 +53,16 @@ plot([min(t) max(t)], [0.5 0.5], 'k--')
 set(gca,'fontsize',fs)
 xlabel('dt')
 ylabel('(\Delta p)(\Delta x)')
+saveas(gcf, [fname, '_errPX.fig'])
+saveas(gcf, [fname, '_errPX.eps'], 'epsc')
 
 figure
 plot(t,Emean,'linewidth',lw)
 set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('E')
+saveas(gcf, [fname, '_Emean.fig'])
+saveas(gcf, [fname, '_Emean.eps'], 'epsc')
 
 figure
 m=1;
@@ -97,18 +109,24 @@ colorbar
 xlabel('x')
 ylabel('t')
 shading flat
+saveas(gcf, [fname, '_psi.fig'])
+saveas(gcf, [fname, '_psi.eps'], 'epsc')
 
 figure
 plot(t,xmean,'k-','linewidth',lw);
 set(gca,'fontsize',fs)
 xlabel('x')
 ylabel('<x>')
+saveas(gcf, [fname, '_x.fig'])
+saveas(gcf, [fname, '_x.eps'], 'epsc')
 
 figure
 plot(t,Pleft,'k-', t,Pright,'r-',t,Pleft+Pright,'b-', 'linewidth',lw);
 set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('Probabilité')
+saveas(gcf, [fname, '_Proba.fig'])
+saveas(gcf, [fname, '_Proba.eps'], 'epsc')
 
 max(Pleft+Pright)
 min(Pleft+Pright)
