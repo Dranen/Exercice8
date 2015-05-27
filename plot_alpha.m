@@ -6,3 +6,5 @@ hold on;
 set(gca,'fontsize',20);
 xlabel('alpha');
 ylabel('max \psi^2 \in [R_{nucleus},0] \forall t');
+saveas(gcf, [fname, '_alpha.fig'])
+saveas(gcf, [fname, '_alpha.eps'], 'epsc')

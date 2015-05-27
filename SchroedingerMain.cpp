@@ -327,7 +327,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
           pmean2 = getmeanp2(psi_now,hbar,dx);
           probnoyeau = probability(psi_next,inucleus,ndx,dx);
         // output the probabilities "left" and "right", mean position and mean energy
-        if(mode == 1)
+        if(mode == 1 && counter >= echt)
         {
             cout << time+dt << " "
              << probability(psi_next,0,inucleus,dx) << " "  // proba "`a gauche"
@@ -339,9 +339,7 @@ void simulation(string const& nom, double n, double alpha, double Rnucleus, doub
              << getenergy(psi_next,dH,aH,cH,dx) << " "
              << sqrt(abs(xmean2-xmean*xmean))<< " "
              << sqrt(abs(pmean2-pmean*pmean))<< endl;
-        }
-        if(mode == 1 && counter >= echt)
-        {
+
            for(int i = 0; i < nx; ++i)
            {
             // asci mode

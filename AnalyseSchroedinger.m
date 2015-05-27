@@ -64,11 +64,11 @@ ylabel('<x>')
 ErrorEnergyConserv=max(Emean)-min(Emean)
 
 %-- 2D plot |psi(x,t)|^2
-nt=length(t);
+nt=length(t)
 clear data
 data=load([fname '_psi.dat']);
-[nn,ii]=size(data);
-nx=nn/nt;
+[nn,ii]=size(data)
+nx=nn/nt
 xgrid=data(1:nx,2);
 zpsiabs2=data(:,3);
 psiabs2=reshape(zpsiabs2,nx,nt);
