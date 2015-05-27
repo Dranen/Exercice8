@@ -1,7 +1,7 @@
 %  fname='out_Delta100';
 function AnalyseSchroedinger(fname)
 data=load([fname '_out.dat']);
-
+fs=16; lw=1.5;
 t=data(:,1);
 Pleft=data(:,2);
 Pright=data(:,3);
@@ -14,36 +14,45 @@ errX=data(:,9);
 errP=data(:,10);
 
 figure
-plot(t,p)
+plot(t,p,'linewidth',lw)
+set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('p')
 figure
-plot(t(2:end),p2(2:end))
+plot(t(2:end),p2(2:end),'linewidth',lw)
+set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('p^2')
 
 figure
 grid on
-plot(t,errX)
+plot(t,errX,'linewidth',lw)
+set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('\Delta x')
 figure
 grid
-plot(t,errP)
+plot(t,errP,'linewidth',lw)
+set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('\Delta p')
 
 figure
 grid on
-plot(t,errX.*errP)
+hold all
+plot(t,errX.*errP,'linewidth',lw)
+plot([min(t) max(t)], [0.5 0.5], 'k--')
+set(gca,'fontsize',fs)
+xlabel('dt')
+ylabel('(\Delta p)(\Delta x)')
 
 figure
-plot(t,Emean)
+plot(t,Emean,'linewidth',lw)
+set(gca,'fontsize',fs)
 xlabel('t')
 ylabel('E')
 
 figure
-fs=16; lw=1.5;
 m=1;
 n=3;
 p=0;

@@ -1,6 +1,6 @@
 name = '8_2a';
 n = 32;
-alpha = 30;
+alpha = 50;
 Rnucleus = 50;
 V0 = -1;
 x0 = -128;
